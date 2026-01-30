@@ -1,0 +1,5 @@
+# Exclude frontend code from language statistics
+eventix/eventix/frontend/** linguist-vendored
+eventix/eventix/frontend/** linguist-documentation
+*.css linguist-vendored
+*.html linguist-vendored
