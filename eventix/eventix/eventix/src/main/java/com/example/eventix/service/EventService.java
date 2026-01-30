@@ -74,6 +74,7 @@ public class EventService {
         Event event = Event.builder()
                 .name(eventDTO.getName())
                 .description(eventDTO.getDescription())
+                .imageUrl(eventDTO.getImageUrl())
                 .category(category)
                 .location(eventDTO.getLocation())
                 .date(eventDTO.getDate())
@@ -104,6 +105,7 @@ public class EventService {
 
         event.setName(eventDTO.getName());
         event.setDescription(eventDTO.getDescription());
+        event.setImageUrl(eventDTO.getImageUrl());
         event.setCategory(category);
         event.setLocation(eventDTO.getLocation());
         event.setDate(eventDTO.getDate());
@@ -140,6 +142,7 @@ public class EventService {
                 .id(event.getId())
                 .name(event.getName())
                 .description(event.getDescription())
+                .imageUrl(event.getImageUrl())
                 .location(event.getLocation())
                 .date(event.getDate())
                 .startTime(event.getStartTime())

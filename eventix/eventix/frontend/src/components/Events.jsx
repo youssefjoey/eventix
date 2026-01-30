@@ -30,6 +30,11 @@ const Events = () => {
           eventService.getAllEvents(),
           categoryService.getAllCategories()
         ]);
+        console.log('📌 Events received from API:', eventsRes.data);
+        if (eventsRes.data && eventsRes.data.length > 0) {
+          console.log('📸 First event imageUrl:', eventsRes.data[0]?.imageUrl);
+          console.log('📸 First event data:', JSON.stringify(eventsRes.data[0], null, 2));
+        }
         setEvents(eventsRes.data || []);
         setCategories(categoriesRes.data || []);
         setFilteredEvents(eventsRes.data || []);
@@ -126,7 +131,26 @@ const Events = () => {
             transition={{ duration: 0.6, delay: (index % 3) * 0.1 }}
           >
             <div className="event-image">
-              <img src="/assets/empire-event.jpg" alt={event.name} />
+              {console.log(`🔍 Event "${event.name}" imageUrl:`, event.imageUrl)}
+              {event.imageUrl ? (
+                <img
+                  src={event.imageUrl}
+                  alt={event.name}
+                />
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(135deg, var(--primary), #1a1a2e)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--text-muted)',
+                  fontSize: '1.2rem'
+                }}>
+                  No Image
+                </div>
+              )}
             </div>
             <div className="event-body">
               <div className="event-category">

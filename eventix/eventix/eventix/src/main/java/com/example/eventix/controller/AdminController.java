@@ -6,14 +6,19 @@ import com.example.eventix.dto.EventDTO;
 import com.example.eventix.dto.ReservationDTO;
 import com.example.eventix.dto.UserDTO;
 import com.example.eventix.service.AdminService;
+import com.example.eventix.service.FileUploadService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -23,6 +28,7 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final FileUploadService fileUploadService;
 
 
     //// Event /////
@@ -45,6 +51,24 @@ public class AdminController {
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         adminService.deleteEvent(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/upload-event-image")
+    public ResponseEntity<Map<String, String>> uploadEventImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = fileUploadService.uploadEventImage(file);
+            Map<String, String> response = new HashMap<>();
+            response.put("imageUrl", imageUrl);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Failed to upload image: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
     }
 
 

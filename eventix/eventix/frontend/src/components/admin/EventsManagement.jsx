@@ -8,6 +8,7 @@ const EventsManagement = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -19,6 +20,7 @@ const EventsManagement = () => {
     availableSeats: '',
     priceBase: '',
     categoryId: '',
+    imageUrl: '',
     userId: JSON.parse(localStorage.getItem('user'))?.id
   });
 
@@ -32,6 +34,8 @@ const EventsManagement = () => {
       setLoading(true);
       const response = await api.get('/events');
       console.log('✅ Events fetched:', response.data);
+      console.log('📸 First event imageUrl:', response.data[0]?.imageUrl);
+      console.log('📸 First event full data:', response.data[0]);
       // Handle response - ensure it's an array
       const eventsData = Array.isArray(response.data) ? response.data : [];
       setEvents(eventsData);
@@ -64,6 +68,47 @@ const EventsManagement = () => {
     }));
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('❌ File size must be less than 10MB');
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('❌ Please upload an image file');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const formDataObj = new FormData();
+      formDataObj.append('file', file);
+
+      const response = await api.post('/admin/upload-event-image', formDataObj, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      console.log('✅ Image uploaded successfully:', response.data);
+      setFormData(prev => ({
+        ...prev,
+        imageUrl: response.data.imageUrl
+      }));
+      alert('✅ Image uploaded successfully!');
+    } catch (error) {
+      console.error('❌ Error uploading image:', error);
+      alert('Failed to upload image: ' + (error.response?.data?.error || error.message));
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleCreateEvent = async (e) => {
     e.preventDefault();
 
@@ -90,6 +135,7 @@ const EventsManagement = () => {
         totalCapacity: parseInt(formData.totalCapacity),
         availableSeats: parseInt(formData.availableSeats || formData.totalCapacity),
         priceBase: parseFloat(formData.priceBase),
+        imageUrl: formData.imageUrl,
         category_id: parseInt(formData.categoryId),
         user_id: parseInt(formData.userId)
       });
@@ -125,6 +171,7 @@ const EventsManagement = () => {
         totalCapacity: parseInt(formData.totalCapacity),
         availableSeats: parseInt(formData.availableSeats),
         priceBase: parseFloat(formData.priceBase),
+        imageUrl: formData.imageUrl,
         category_id: parseInt(formData.categoryId),
         user_id: parseInt(formData.userId)
       });
@@ -165,6 +212,7 @@ const EventsManagement = () => {
       totalCapacity: event.totalCapacity,
       availableSeats: event.availableSeats,
       priceBase: event.priceBase,
+      imageUrl: event.imageUrl || '',
       categoryId: event.categoryId,
       userId: event.userId
     });
@@ -184,6 +232,7 @@ const EventsManagement = () => {
       availableSeats: '',
       priceBase: '',
       categoryId: '',
+      imageUrl: '',
       userId: JSON.parse(localStorage.getItem('user'))?.id
     });
   };
@@ -289,6 +338,48 @@ const EventsManagement = () => {
             onChange={handleInputChange}
             rows="4"
           />
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+              📸 Event Image
+            </label>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+              <div style={{ flex: 1 }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={uploadingImage}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '0.8rem',
+                    border: '2px dashed var(--primary)',
+                    borderRadius: '8px',
+                    cursor: uploadingImage ? 'not-allowed' : 'pointer',
+                    opacity: uploadingImage ? 0.6 : 1
+                  }}
+                />
+                {uploadingImage && <p style={{ color: 'var(--primary)', fontSize: '0.9rem', marginTop: '0.5rem' }}>⏳ Uploading image...</p>}
+              </div>
+              {formData.imageUrl && (
+                <div style={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  border: '2px solid var(--primary)'
+                }}>
+                  <img
+                    src={formData.imageUrl}
+                    alt="Event preview"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
           <button type="submit" className="btn btn-success">
             {editingId ? '💾 Update Event' : '✨ Create Event'}
           </button>

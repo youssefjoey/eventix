@@ -32,6 +32,8 @@ public class EventDTO {
 
     private String description;
 
+    private String imageUrl;
+
     @NotNull(message = "Event Date is required")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;

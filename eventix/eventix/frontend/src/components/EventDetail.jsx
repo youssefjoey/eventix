@@ -71,11 +71,26 @@ const EventDetail = () => {
           animate={{ opacity: 1, scale: 1 }}
           style={{ height: '600px', marginBottom: '5rem', background: '#000', borderRadius: '40px', overflow: 'hidden', boxShadow: 'var(--shadow-heavy)' }}
         >
-          <img
-            src="/assets/empire-event.jpg"
-            alt={event.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
+          {event.imageUrl ? (
+            <img
+              src={event.imageUrl}
+              alt={event.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            <div style={{
+              width: '100%',
+              height: '100%',
+              background: 'linear-gradient(135deg, var(--primary), #1a1a2e)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-muted)',
+              fontSize: '1.5rem'
+            }}>
+              No Image Available
+            </div>
+          )}
         </motion.div>
 
         <div style={{ textAlign: 'center', marginBottom: '6rem' }}>
