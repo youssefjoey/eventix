@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Eventix - Email Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            padding: 0;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .email-wrapper {
+            width: 100%;
+            background: #000000;
+            padding: 40px 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(138, 43, 226, 0.3),
+                0 0 100px rgba(75, 0, 130, 0.2),
+                inset 0 0 100px rgba(138, 43, 226, 0.05);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            position: relative;
+        }
+
+        /* Animated stars background */
+        .stars-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent),
+                radial-gradient(1px 1px at 15% 90%, white, transparent);
+            background-size: 200% 200%;
+            background-position: 0% 0%;
+            opacity: 0.4;
+            pointer-events: none;
+            animation: twinkle 20s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                background-position: 0% 0%;
+            }
+
+            50% {
+                opacity: 0.6;
+                background-position: 100% 100%;
+            }
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            border-bottom: 2px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .logo {
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8a2be2 0%, #9d4edd 50%, #c77dff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.5));
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.5));
+            }
+
+            50% {
+                filter: drop-shadow(0 0 30px rgba(138, 43, 226, 0.8));
+            }
+        }
+
+        .header-subtitle {
+            color: #a0a0c0;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .email-body {
+            padding: 50px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+
+        .greeting {
+            color: #e0e0ff;
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(75, 0, 130, 0.1) 100%);
+            border-left: 4px solid #8a2be2;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+        }
+
+        .highlight-box p {
+            color: #d0d0e0;
+            font-size: 16px;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .features {
+            margin: 40px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(138, 43, 226, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(138, 43, 226, 0.1);
+        }
+
+        .feature-item:hover {
+            background: rgba(138, 43, 226, 0.1);
+            border-color: rgba(138, 43, 226, 0.3);
+            transform: translateX(5px);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8a2be2 0%, #9d4edd 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        .feature-icon::before {
+            content: "★";
+            color: #ffffff;
+            font-size: 24px;
+            animation: rotate 4s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .feature-content h3 {
+            color: #ffffff;
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .feature-content p {
+            color: #b0b0c0;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8a2be2 0%, #9d4edd 100%);
+            color: #ffffff;
+            padding: 18px 50px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            text-align: center;
+            margin: 30px auto;
+            display: block;
+            max-width: 300px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4),
+                0 0 50px rgba(138, 43, 226, 0.2);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.6),
+                0 0 70px rgba(138, 43, 226, 0.3);
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(138, 43, 226, 0.5) 50%, transparent 100%);
+            margin: 40px 0;
+        }
+
+        .email-footer {
+            background: #0a0a0a;
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid rgba(138, 43, 226, 0.2);
+        }
+
+        .footer-text {
+            color: #808090;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            margin: 25px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: rgba(138, 43, 226, 0.2);
+            border-radius: 50%;
+            margin: 0 8px;
+            line-height: 40px;
+            color: #8a2be2;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .social-link:hover {
+            background: rgba(138, 43, 226, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        .unsubscribe {
+            color: #606070;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .unsubscribe a {
+            color: #8a2be2;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .unsubscribe a:hover {
+            color: #9d4edd;
+        }
+
+        /* Responsive Design */
+        @media only screen and (max-width: 600px) {
+
+            .email-header,
+            .email-body,
+            .email-footer {
+                padding: 30px 20px;
+            }
+
+            .logo {
+                font-size: 32px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .greeting {
+                font-size: 16px;
+            }
+
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .feature-icon {
+                margin: 0 auto 15px;
+            }
+
+            .cta-button {
+                padding: 15px 30px;
+                font-size: 14px;
+            }
+        }
+
+        /* Eye comfort optimizations */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #000000;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <div class="stars-layer"></div>
+
+            <div class="email-header">
+                <div class="logo">EVENTIX</div>
+                <div class="header-subtitle">Your Event Universe Awaits</div>
+            </div>
+
+            <div class="email-body">
+                <h1>🌟 Welcome to Eventix!</h1>
+
+                <p class="greeting">
+                    Hello <strong>John Doe</strong>,<br>
+                    We're thrilled to have you join our stellar community!
+                </p>
+
+                <div class="highlight-box">
+                    <p>
+                        Your journey through the universe of unforgettable events begins now.
+                        Eventix is your gateway to discovering, creating, and experiencing
+                        extraordinary moments that shine like stars in the night sky.
+                    </p>
+                </div>
+
+                <div class="features">
+                    <div class="feature-item">
+                        <div class="feature-icon"></div>
+                        <div class="feature-content">
+                            <h3>Discover Amazing Events</h3>
+                            <p>Explore a galaxy of events tailored to your interests and passions.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon"></div>
+                        <div class="feature-content">
+                            <h3>Seamless Booking</h3>
+                            <p>Reserve your spot with our smooth, secure ticketing system.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon"></div>
+                        <div class="feature-content">
+                            <h3>Create Your Own Events</h3>
+                            <p>Launch your own events and bring your vision to life.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="cta-button">
+                    Explore Events
+                </a>
+
+                <div class="divider"></div>
+
+                <div class="highlight-box">
+                    <p style="text-align: center; margin: 0;">
+                        <strong>Need Help?</strong><br>
+                        Our support team is here for you 24/7.
+                        Reach out anytime at <a href="mailto:support@eventix.com"
+                            style="color: #8a2be2; text-decoration: none;">support@eventix.com</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="email-footer">
+                <p class="footer-text">
+                    Thank you for choosing Eventix.<br>
+                    Let's create unforgettable memories together!
+                </p>
+
+                <div class="social-links">
+                    <a href="#" class="social-link">f</a>
+                    <a href="#" class="social-link">t</a>
+                    <a href="#" class="social-link">in</a>
+                    <a href="#" class="social-link">ig</a>
+                </div>
+
+                <p class="footer-text" style="font-size: 12px; margin-top: 30px;">
+                    © 2026 Eventix. All rights reserved.<br>
+                    123 Event Street, City, Country
+                </p>
+
+                <p class="unsubscribe">
+                    Don't want to receive these emails?
+                    <a href="#">Unsubscribe</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

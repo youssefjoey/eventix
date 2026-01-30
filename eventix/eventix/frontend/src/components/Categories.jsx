@@ -1,0 +1,211 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { categoryService, eventService, reservationService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import '../styles/EventPages.css';
+import { ArrowRight, Layers, X, Plus, Minus, MapPin, Clock, ShieldCheck } from 'lucide-react';
+
+const Categories = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categoryEvents, setCategoryEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Modal State
+  const [activeEvent, setActiveEvent] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [reserveError, setReserveError] = useState(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await categoryService.getAllCategories();
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleSelectCategory = async (categoryId) => {
+    setSelectedCategory(categoryId);
+    try {
+      const response = await eventService.getEventsByCategory(categoryId);
+      setCategoryEvents(response.data || []);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  const openEventModal = (event) => {
+    if (!user) { navigate('/login'); return; }
+    setActiveEvent(event);
+    setQuantity(1);
+    setSuccess(false);
+    setReserveError(null);
+  };
+
+  const handleReservation = async () => {
+    try {
+      setSubmitting(true);
+      setReserveError(null);
+      await reservationService.createReservation({
+        user_id: user.id,
+        event_id: activeEvent.id,
+        seats_reserved: quantity
+      });
+      setSuccess(true);
+      setTimeout(() => {
+        setActiveEvent(null);
+        navigate('/my-tickets');
+      }, 2000);
+    } catch (err) {
+      setReserveError(err.response?.data?.message || "Reservation failed.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="spinner"></div></div>;
+
+  return (
+    <div className="container" style={{ paddingBottom: '100px', paddingTop: '100px' }}>
+      <header className="page-header" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+          <span style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.7rem', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '2rem', display: 'block' }}>COLLECTION TYPES</span>
+          <h1 style={{ fontSize: '5rem', marginBottom: '2rem' }}>EVENT <span style={{ color: 'var(--primary)' }}>GENRE</span></h1>
+          <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--text-dim)', fontStyle: 'italic' }}>Filter by specific dimensions of experience.</p>
+        </motion.div>
+      </header>
+
+      <div className="category-filter">
+        <button
+          className={`category-btn ${selectedCategory === null ? 'active' : ''}`}
+          onClick={() => { setSelectedCategory(null); setCategoryEvents([]); }}
+        >
+          ALL DIMENSIONS
+        </button>
+        {categories.map(category => (
+          <button
+            key={category.id}
+            className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
+            onClick={() => handleSelectCategory(category.id)}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+
+      {selectedCategory && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="category-results">
+          {categoryEvents.length === 0 ? (
+            <div className="card" style={{ textAlign: 'center', padding: '6rem', maxWidth: '700px', margin: '0 auto', background: 'var(--bg-surface)' }}>
+              <Layers size={40} color="var(--primary)" style={{ marginBottom: '2rem', opacity: 0.3 }} />
+              <p style={{ fontSize: '1.2rem', color: 'var(--text-dim)' }}>THIS DIMENSION IS CURRENTLY EMPTY.</p>
+              <button onClick={() => setSelectedCategory(null)} className="btn-secondary" style={{ marginTop: '3rem' }}>RETURN TO FEED</button>
+            </div>
+          ) : (
+            <div className="events-grid">
+              {categoryEvents.map(event => (
+                <div key={event.id} className="event-card">
+                  <div className="event-image">
+                    <img src="/assets/empire-event.jpg" alt={event.name} />
+                  </div>
+                  <div className="event-body">
+                    <div className="event-category">
+                      {categories.find(c => c.id === event.category_id)?.name}
+                    </div>
+                    <h3 className="event-name">{event.name}</h3>
+                    <div className="event-price">${event.priceBase}</div>
+                    <div className="event-footer">
+                      <button className="btn-primary" onClick={() => openEventModal(event)}>
+                        VIEW PROFILE <ArrowRight size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      )}
+
+      {/* EVENT MODAL - Consistent with Events page */}
+      <AnimatePresence>
+        {activeEvent && (
+          <div className="modal-overlay" onClick={() => setActiveEvent(null)}>
+            <motion.div
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            >
+              <button className="modal-close" onClick={() => setActiveEvent(null)}>
+                <X size={20} />
+              </button>
+
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.7rem', letterSpacing: '0.3em', display: 'block', marginBottom: '1.5rem' }}>RESERVE ACCESS</span>
+                <h3 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', fontFamily: 'Unbounded' }}>{activeEvent.name}</h3>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '3rem', color: 'var(--text-dim)', fontSize: '0.8rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><MapPin size={14} /> {activeEvent.location}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={14} /> {new Date(activeEvent.date).toLocaleDateString()}</div>
+                </div>
+
+                <div style={{ marginBottom: '3.5rem' }}>
+                  <div style={{ color: 'var(--text-muted)', fontWeight: 800, fontSize: '0.6rem', letterSpacing: '0.2em', marginBottom: '1.5rem' }}>QUANTITY</div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem' }}>
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="btn-secondary"
+                      style={{ width: '40px', height: '40px', borderRadius: '50%', padding: 0 }}
+                    ><Minus size={16} /></button>
+                    <span style={{ fontSize: '2.5rem', fontWeight: 800 }}>{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(Math.min(activeEvent.availableSeats, quantity + 1))}
+                      className="btn-secondary"
+                      style={{ width: '40px', height: '40px', borderRadius: '50%', padding: 0 }}
+                    ><Plus size={16} /></button>
+                  </div>
+                </div>
+
+                <div style={{ borderTop: '1px solid var(--border-bold)', paddingTop: '3rem', marginBottom: '3.5rem' }}>
+                  <div style={{ color: 'var(--text-muted)', fontWeight: 800, fontSize: '0.6rem', letterSpacing: '0.2em', marginBottom: '0.5rem' }}>TOTAL PRICE</div>
+                  <div style={{ fontSize: '3rem', fontWeight: 900, color: '#fff' }}>${(activeEvent.priceBase * quantity).toFixed(2)}</div>
+                </div>
+
+                {reserveError && <p style={{ color: '#f85149', fontSize: '0.8rem', marginBottom: '2rem' }}>{reserveError}</p>}
+
+                <button
+                  className="btn-primary"
+                  style={{ width: '100%', padding: '1.2rem' }}
+                  onClick={handleReservation}
+                  disabled={submitting || success}
+                >
+                  {submitting ? 'PROCESSING...' : success ? 'ACCESS SECURED' : 'CONFIRM RESERVATION'}
+                </button>
+
+                <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', color: 'var(--text-muted)', fontSize: '0.7rem' }}>
+                  <ShieldCheck size={14} /> ENCRYPTED GATEWAY ACTIVE
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default Categories;

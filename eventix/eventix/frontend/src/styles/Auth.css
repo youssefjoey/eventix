@@ -1,0 +1,134 @@
+/* ==================================================
+   PRESTIGE GREY — AUTH PAGES
+   ================================================== */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px 80px;
+  background: var(--bg-dark);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-bold);
+  border-radius: 40px;
+  padding: 4rem;
+  box-shadow: var(--shadow-heavy);
+  animation: auth-entrance 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes auth-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-header {
+  text-align: left;
+  margin-bottom: 4rem;
+}
+
+.auth-header h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 3rem;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+}
+
+.auth-header p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  font-weight: 300;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form-group label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  letter-spacing: 0.15rem;
+  text-transform: uppercase;
+}
+
+.form-group input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-bold);
+  border-radius: 100px;
+  padding: 1.2rem 2rem;
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 580px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.auth-footer {
+  margin-top: 3rem;
+  text-align: left;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.auth-footer a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid rgba(248, 81, 73, 0.2);
+  color: #f85149;
+  padding: 1.2rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+}

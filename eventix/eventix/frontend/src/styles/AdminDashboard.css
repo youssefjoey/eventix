@@ -1,0 +1,43 @@
+/* ==================================================
+   ADMIN DASHBOARD
+   ================================================== */
+
+.admin-hero {
+  padding: 7rem 2rem 4rem;
+  text-align: center;
+}
+
+.admin-hero h1 {
+  font-size: 4.8rem;
+  background: linear-gradient(90deg, var(--glow-cyan), #4fc3f7, #81d4fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  margin: 3rem 0 4rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.28);
+  color: var(--text-secondary);
+  padding: 1.1rem 2.4rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  transition: all 0.4s ease;
+}
+
+.tab-btn:hover,
+.tab-btn.active {
+  background: rgba(0,212,255,0.26);
+  border-color: var(--glow-cyan);
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px rgba(0,212,255,0.3);
+}
