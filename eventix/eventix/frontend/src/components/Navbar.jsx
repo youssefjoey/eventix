@@ -32,13 +32,17 @@ const Navbar = () => {
           <Zap size={22} color="var(--primary)" fill="var(--primary)" />
         </Link>
 
-        {}
+        { }
         <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }}></div>
 
         <div className="navbar-links" style={{ gap: '1.5rem' }}>
-          <Link to="/events" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>EXPLORE</Link>
-          <Link to="/categories" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>GENRES</Link>
-          {user && <Link to="/my-tickets" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary)' }}>TICKETS</Link>}
+          {user?.role !== 'ADMIN' && (
+            <>
+              <Link to="/events" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>EXPLORE</Link>
+              <Link to="/categories" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>GENRES</Link>
+              {user && <Link to="/my-tickets" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary)' }}>TICKETS</Link>}
+            </>
+          )}
           {user?.role === 'ADMIN' && <Link to="/admin" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 900, color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '100px' }}>ADMIN HUB</Link>}
         </div>
 

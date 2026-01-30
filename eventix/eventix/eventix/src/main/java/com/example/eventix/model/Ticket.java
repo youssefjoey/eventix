@@ -25,7 +25,6 @@ public class Ticket {
 
     private boolean checked_in;
 
-    @Enumerated(EnumType.STRING)
     private TicketStatus status;
 
 }

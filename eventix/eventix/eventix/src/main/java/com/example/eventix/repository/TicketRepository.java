@@ -9,6 +9,6 @@ public interface TicketRepository extends JpaRepository<Ticket,Long> {
 
     Optional<Ticket> findByTicketCode(String ticketCode);
 
-    Optional<Ticket> findByReservation_Id(Long reservationId);
+    java.util.List<Ticket> findByReservation_Id(Long reservationId);
 
 }

@@ -29,7 +29,6 @@ public class Reservation {
 
     private Long seats;
 
-    @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)

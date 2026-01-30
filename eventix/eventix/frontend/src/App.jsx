@@ -40,6 +40,24 @@ const ProtectedRoute = ({ children }) => {
   return user ? children : <Navigate to="/login" replace />;
 };
 
+const AdminRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '100px 20px' }}>
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  if (!user || user.role !== 'ADMIN') {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
 function AppContent() {
   const location = useLocation();
 
@@ -56,7 +74,7 @@ function AppContent() {
           <Route path="/categories" element={<PageWrapper><Categories /></PageWrapper>} />
           <Route path="/event/:eventId" element={<PageWrapper><ProtectedRoute><EventDetail /></ProtectedRoute></PageWrapper>} />
           <Route path="/my-tickets" element={<PageWrapper><ProtectedRoute><MyTickets /></ProtectedRoute></PageWrapper>} />
-          <Route path="/admin" element={<PageWrapper><ProtectedRoute><AdminDashboard /></ProtectedRoute></PageWrapper>} />
+          <Route path="/admin" element={<PageWrapper><AdminRoute><AdminDashboard /></AdminRoute></PageWrapper>} />
         </Routes>
       </AnimatePresence>
     </>

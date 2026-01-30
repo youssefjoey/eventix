@@ -1,8 +1,6 @@
 package com.example.eventix.service;
 
-import com.example.eventix.dto.EventDTO;
 import com.example.eventix.dto.ReservationDTO;
-import com.example.eventix.dto.UserDTO;
 import com.example.eventix.exception.ResourceNotFoundException;
 import com.example.eventix.model.*;
 import com.example.eventix.repository.*;
@@ -14,8 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListResourceBundle;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +23,7 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final PaymentRepository paymentRepository;
-    private final TicketRepository ticketRepository;
+    private final TicketService ticketService;
 
 
     public ReservationDTO createReservation(ReservationDTO dto){
@@ -42,29 +38,32 @@ public class ReservationService {
 
         event.setAvailableSeats(event.getAvailableSeats() - dto.getSeats_reserved());
 
-        int seats = Math.toIntExact(dto.getSeats_reserved());
-
         
         Reservation reservation = Reservation.builder()
                 .user(user)
                 .event(event)
                 .seats(dto.getSeats_reserved())
-                .status(ReservationStatus.HELD)
+                .status(ReservationStatus.PAID) // Automatically mark as PAID for instant tickets
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plus(30, java.time.temporal.ChronoUnit.MINUTES))
                 .build();
 
         Reservation saved = reservationRepository.save(reservation);
 
+        // Create a successful payment record automatically
         Payment payment = Payment.builder()
                 .reservation(saved)
                 .amount(event.getPriceBase().multiply(BigDecimal.valueOf(dto.getSeats_reserved())))
-                .status(Payment_Status.valueOf(Payment_Status.PENDING.name()))
-                .method(null)
+                .status(Payment_Status.SUCCESS)
+                .method(Payment_Method.CARD)
                 .paidAt(LocalDateTime.now())
                 .build();
 
         paymentRepository.save(payment);
+
+        // TRIGGER TICKET GENERATION IMMEDIATELY
+        System.out.println("🚀 Triggering ticket generation for new reservation ID: " + saved.getId());
+        ticketService.generateTicketsForReservation(saved);
 
         return mapToDTO(saved);
     }
@@ -74,51 +73,34 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation Not Found"));
 
-        System.out.println("🚫 Canceling reservation #" + id);
-
-        
         reservation.setStatus(ReservationStatus.CANCELLED);
         reservationRepository.save(reservation);
-        System.out.println("✅ Reservation marked as CANCELLED");
 
-        
         paymentRepository.findByReservation_Id(reservation.getId())
                 .ifPresent(payment -> {
-                    payment.setStatus(Payment_Status.valueOf(Payment_Status.FAILED.name()));
+                    payment.setStatus(Payment_Status.FAILED);
                     paymentRepository.save(payment);
-                    System.out.println("✅ Payment marked as FAILED");
                 });
 
-        
         Event event = reservation.getEvent();
         event.setAvailableSeats(event.getAvailableSeats() + reservation.getSeats());
-        System.out.println("✅ Seats returned to event. Available: " + event.getAvailableSeats());
 
-        
-        ticketRepository.findAll().stream()
-                .filter(t -> t.getReservation().getId().equals(reservation.getId()))
-                .forEach(ticket -> {
-                    ticket.setStatus(TicketStatus.CANCELED);
-                    ticketRepository.save(ticket);
-                    System.out.println("✅ Ticket #" + ticket.getId() + " marked as CANCELED");
+        ticketService.getAllTicketsByReservationId(reservation.getId())
+                .forEach(ticketDTO -> {
+                   // Logic to cancel tickets could go here via ticketService
                 });
-
-        System.out.println("🎫 All tickets for reservation #" + id + " marked as CANCELED");
     }
 
 
 
     public List<ReservationDTO> findReservationByUserId(Long id){
         List<Reservation> reservations  = reservationRepository.findByUser_Id(id);
-
-
         return reservations.stream()
                 .map(this::mapToDTO)
                 .toList();
     }
 
     public List<ReservationDTO> findByEventIdAndStatus(Long eventId , ReservationStatus reservationStatus){
-        
         List<Reservation> reservations = Collections.singletonList(reservationRepository.findByEvent_IdAndStatus(eventId, reservationStatus));
         if (reservations.isEmpty()) {
             throw new ResourceNotFoundException(

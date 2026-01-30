@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/payments")
@@ -40,5 +42,27 @@ public class PaymentController {
     public ResponseEntity<Void> deletePayment(@PathVariable Long id){
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // DEBUG: Test endpoint to manually create tickets for a reservation
+    private final com.example.eventix.service.TicketService ticketService;
+    private final com.example.eventix.repository.ReservationRepository reservationRepository;
+
+    @PostMapping("/debug/create-tickets/{reservationId}")
+    public ResponseEntity<Map<String, String>> debugCreateTickets(@PathVariable Long reservationId) {
+        try {
+            com.example.eventix.model.Reservation reservation = reservationRepository.findById(reservationId)
+                    .orElseThrow(() -> new RuntimeException("Reservation not found"));
+            ticketService.generateTicketsForReservation(reservation);
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "✅ Tickets created successfully");
+            response.put("reservationId", String.valueOf(reservationId));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("status", "❌ Error");
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(500).body(error);
+        }
     }
 }

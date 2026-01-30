@@ -56,19 +56,15 @@ public class TicketService {
 
 
     public TicketDTO getTicketByReservationId(Long reservationId) {
-        Ticket ticket = ticketRepository.findAll()
+        return ticketRepository.findByReservation_Id(reservationId)
                 .stream()
-                .filter(t -> t.getReservation().getId().equals(reservationId))
                 .findFirst()
+                .map(this::mapToDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found for reservation: " + reservationId));
-        return mapToDTO(ticket);
     }
 
     public List<TicketDTO> getAllTicketsByReservationId(Long reservationId) {
-        List<Ticket> tickets = ticketRepository.findAll()
-                .stream()
-                .filter(t -> t.getReservation().getId().equals(reservationId))
-                .collect(Collectors.toList());
+        List<Ticket> tickets = ticketRepository.findByReservation_Id(reservationId);
 
         if (tickets.isEmpty()) {
             throw new ResourceNotFoundException("No tickets found for reservation: " + reservationId);
@@ -80,9 +76,7 @@ public class TicketService {
     }
 
     public boolean ticketExistsForReservation(Long reservationId) {
-        return ticketRepository.findAll()
-                .stream()
-                .anyMatch(t -> t.getReservation().getId().equals(reservationId));
+        return !ticketRepository.findByReservation_Id(reservationId).isEmpty();
     }
 
 
@@ -125,7 +119,40 @@ public class TicketService {
                 .build();
     }
 
+    public List<TicketDTO> generateTicketsForReservation(Reservation reservation) {
+        System.out.println("🎫 Generating tickets for reservation: " + reservation.getId() + " (" + reservation.getSeats() + " seats)");
+        
+        Long seatsReserved = reservation.getSeats();
+        if (seatsReserved == null || seatsReserved <= 0) {
+            System.out.println("⚠️ No seats reserved, skipping ticket generation.");
+            return List.of();
+        }
+
+        // Check if tickets already exist to avoid duplicates
+        List<Ticket> existing = ticketRepository.findByReservation_Id(reservation.getId());
+        if (!existing.isEmpty()) {
+            System.out.println("⚠️ Tickets already exist for this reservation. Skipping.");
+            return existing.stream().map(this::mapToDTO).collect(Collectors.toList());
+        }
+
+        for (int i = 0; i < seatsReserved; i++) {
+            Ticket ticket = Ticket.builder()
+                    .reservation(reservation)
+                    .ticketCode(generateTicketCode())
+                    .checked_in(false)
+                    .status(TicketStatus.ACTIVE)
+                    .build();
+            ticketRepository.save(ticket);
+            System.out.println("✅ Ticket created: " + ticket.getTicketCode());
+        }
+        
+        return ticketRepository.findByReservation_Id(reservation.getId())
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     private String generateTicketCode() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 20).toUpperCase();
+        return "TKT-" + System.currentTimeMillis() + "-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }

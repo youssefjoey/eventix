@@ -54,15 +54,8 @@ const MyTickets = () => {
               });
             });
           } catch (error) {
-            ticketsData.push({
-              id: `placeholder-${reservation.id}`,
-              ticketCode: `RES-${reservation.id}`,
-              reservation_id: reservation.id,
-              event_id: reservation.event_id,
-              seats_reserved: reservation.seats_reserved,
-              checked_in: false,
-              is_placeholder: true
-            });
+            console.error(`Error fetching tickets for reservation ${reservation.id}:`, error.message);
+            // Don't create placeholder tickets - wait for real tickets to be saved to database
           }
         }
 
