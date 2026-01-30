@@ -57,7 +57,7 @@ const Register = () => {
 
       setSuccess('Identity Verified. Access Initialized.');
       login(response.data);
-      setTimeout(() => navigate('/events'), 1500);
+      setTimeout(() => navigate('/'), 1500);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed.');
     } finally {

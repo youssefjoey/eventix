@@ -30,7 +30,7 @@ const Login = () => {
       const response = await authService.login(email, password);
       setSuccess('Access Granted. Sychnronizing...');
       login(response.data);
-      setTimeout(() => navigate('/events'), 1500);
+      setTimeout(() => navigate('/'), 1500);
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid credentials.');
     } finally {

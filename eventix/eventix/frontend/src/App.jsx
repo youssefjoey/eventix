@@ -37,7 +37,7 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  return user ? children : <Navigate to="/login" replace />;
+  return user ? children : <Navigate to="/" replace />;
 };
 
 const AdminRoute = ({ children }) => {
@@ -51,10 +51,31 @@ const AdminRoute = ({ children }) => {
     );
   }
 
+  // Only allow ADMIN role to access admin routes
   if (!user || user.role !== 'ADMIN') {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
+  return children;
+};
+
+const HomeRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '100px 20px' }}>
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  // If not logged in, show login page
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // If logged in, show home page
   return children;
 };
 
@@ -67,7 +88,7 @@ function AppContent() {
       <Navbar />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+          <Route path="/" element={<PageWrapper><HomeRoute><Home /></HomeRoute></PageWrapper>} />
           <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
           <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
           <Route path="/events" element={<PageWrapper><Events /></PageWrapper>} />
