@@ -1,6 +1,4 @@
-/* ==================================================
-   NAVBAR - GLASSMORPHISM
-   ================================================== */
+
 
 .navbar {
   position: fixed;
@@ -109,6 +107,6 @@
 @media (max-width: 768px) {
   .navbar-links {
     display: none;
-    /* Add a mobile menu later if needed */
+    
   }
 }

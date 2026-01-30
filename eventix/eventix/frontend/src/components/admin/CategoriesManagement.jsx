@@ -18,15 +18,15 @@ const CategoriesManagement = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      // api.baseURL already contains /api/v1, so use the relative path here
+      
       const response = await api.get('/categories');
       console.log('✅ Categories fetched:', response.data);
-      // Handle response - ensure it's an array
+      
       const categoriesData = Array.isArray(response.data) ? response.data : [];
       setCategories(categoriesData);
     } catch (error) {
       console.error('❌ Error fetching categories:', error);
-      setCategories([]); // Set empty array on error
+      setCategories([]); 
     } finally {
       setLoading(false);
     }

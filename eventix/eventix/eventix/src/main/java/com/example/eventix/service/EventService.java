@@ -120,22 +120,22 @@ public class EventService {
     }
 
 
-//    public List<EventDTO>getEventByDate(LocalDateTime date){
-//        return eventRepository.findByDate(date)
-//                .stream()
-//                .map(this::mapToDTO)
-//                .toList();
-//    }
-//    public List<EventDTO> getEventByDateRange(LocalDateTime date){
-//
-//        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
-//        LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
-//
-//        return eventRepository.findByDateBetween(startOfDay,endOfDay)
-//                .stream()
-//                .map(this::mapToDTO)
-//                .toList();
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private EventDTO mapToDTO(Event event) {
         return EventDTO.builder()

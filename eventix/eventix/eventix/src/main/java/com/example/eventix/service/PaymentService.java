@@ -37,7 +37,7 @@ public class PaymentService {
 
         System.out.println("✅ Reservation found - ID: " + reservation.getId() + ", Status: " + reservation.getStatus());
 
-        // Check if payment already exists for this reservation
+        
         java.util.Optional<Payment> existingPayment = paymentRepository.findByReservation_Id(dto.getReservation_id());
 
         Payment payment;
@@ -59,14 +59,14 @@ public class PaymentService {
             payment = paymentRepository.save(payment);
             System.out.println("✅ Payment saved! Payment ID: " + payment.getId());
 
-            // Update reservation status to PAID
+            
             System.out.println("🔄 Updating reservation status to PAID...");
             reservation.setStatus(ReservationStatus.PAID);
             reservationRepository.save(reservation);
             System.out.println("✅ Reservation updated to PAID status");
         }
 
-        // IMPORTANT: Always generate ticket regardless of payment status
+        
         System.out.println("\n🎫 STARTING TICKET GENERATION...");
         generateTicketForReservation(reservation);
         System.out.println("🎫 TICKET GENERATION COMPLETED\n");
@@ -83,7 +83,7 @@ public class PaymentService {
         System.out.println("    Seats Reserved: " + reservation.getSeats());
 
         try {
-            // Check if tickets already exist using repository method
+            
             System.out.println("    Checking if tickets already exist...");
             List<Ticket> existingTickets = ticketRepository.findAll()
                     .stream()
@@ -96,7 +96,7 @@ public class PaymentService {
                 return;
             }
 
-            // Generate one ticket per seat reserved
+            
             Long seatsReserved = reservation.getSeats();
             System.out.println("    📝 Creating " + seatsReserved + " ticket(s) for " + seatsReserved + " seat(s)");
 

@@ -1,34 +1,32 @@
-/* ==================================================
-   EVENTIX — PRESTIGE GREY & ORANGE LUXURY 
-   ================================================== */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Unbounded:wght@200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Prestige Palette - Light Mode // Standard Modern */
+  
   --bg-dark: #F2F2F2;
-  /* Main Background - Clean Light Grey */
+  
   --bg-surface: #ffffff;
-  /* Card/Modal Surface - Pure White */
+  
   --bg-black: #fafafa;
-  /* Secondary Section Background */
+  
 
-  /* Brand Constants */
+  
   --primary: #F4793A;
-  /* Signature Orange */
+  
   --primary-glow: rgba(244, 121, 58, 0.3);
   --secondary: #000000;
 
-  /* Ticket Energy */
+  
   --ticket-orange: #F4793A;
   --ticket-glow: rgba(244, 121, 58, 0.5);
 
-  /* Refined Text - Inverted for Light Mode */
+  
   --text-main: #121212;
   --text-dim: #666666;
   --text-muted: #999999;
 
-  /* Aesthetics */
+  
   --border-subtle: rgba(0, 0, 0, 0.05);
   --border-bold: rgba(0, 0, 0, 0.1);
   --shadow-heavy: 0 40px 80px rgba(0, 0, 0, 0.15);
@@ -52,7 +50,7 @@ body {
   font-size: 110%;
 }
 
-/* Custom Scrollbar */
+
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -72,7 +70,7 @@ body {
   padding: 0 4rem;
 }
 
-/* Kinetic Typography */
+
 h1,
 h2,
 h3 {
@@ -91,7 +89,7 @@ h2 {
   font-size: 4rem;
 }
 
-/* Luxury Pillow Buttons */
+
 button,
 .btn {
   display: inline-flex;
@@ -104,7 +102,7 @@ button,
   text-transform: uppercase;
   letter-spacing: 0.15em;
   border-radius: 100px;
-  /* Floating Circular Feel */
+  
   cursor: pointer;
   transition: var(--transition);
   border: 1px solid var(--border-bold);
@@ -133,7 +131,7 @@ button,
   color: #000;
 }
 
-/* Prestige Cards */
+
 .card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -147,7 +145,7 @@ button,
   box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
 }
 
-/* Spinning Loader */
+
 .spinner {
   width: 50px;
   height: 50px;
@@ -173,9 +171,7 @@ button,
   }
 }
 
-/* ==================================================
-   PRESTIGE MODAL SYSTEM
-   ================================================== */
+
 
 .modal-overlay {
   position: fixed;

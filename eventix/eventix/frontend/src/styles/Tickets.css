@@ -1,6 +1,4 @@
-/* ==================================================
-   AWWWARDS-STYLE TICKET DESIGN
-   ================================================== */
+
 
 .tickets-container {
   display: grid;
@@ -15,7 +13,7 @@
   width: 300px;
   min-height: 520px;
   border-radius: 4px;
-  /* Slightly rounded edges for premium feel */
+  
   position: relative;
   display: flex;
   flex-direction: column;
@@ -25,7 +23,7 @@
   transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   overflow: hidden;
 
-  /* Color Movement Effect */
+  
   background: linear-gradient(135deg, #ff8c00, #ffb045, #ff8c00);
   background-size: 200% 200%;
   animation: ticket-glow-move 6s ease infinite;

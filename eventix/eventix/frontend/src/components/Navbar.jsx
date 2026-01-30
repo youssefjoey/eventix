@@ -32,7 +32,7 @@ const Navbar = () => {
           <Zap size={22} color="var(--primary)" fill="var(--primary)" />
         </Link>
 
-        {/* Separator Pipe */}
+        {}
         <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }}></div>
 
         <div className="navbar-links" style={{ gap: '1.5rem' }}>

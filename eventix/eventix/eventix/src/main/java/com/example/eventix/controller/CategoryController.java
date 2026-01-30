@@ -28,18 +28,18 @@ public class CategoryController {
       return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
-//Admin Roles
-//    @PostMapping
-//    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
-//        CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
-//        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-//        categoryService.deleteCategory(id);
-//        return ResponseEntity.noContent().build();
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

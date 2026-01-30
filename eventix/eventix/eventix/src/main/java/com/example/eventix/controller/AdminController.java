@@ -31,7 +31,7 @@ public class AdminController {
     private final FileUploadService fileUploadService;
 
 
-    //// Event /////
+    
 
     @PostMapping("/events")
     public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) {
@@ -72,7 +72,7 @@ public class AdminController {
     }
 
 
-    //// Category /////
+    
 
     @PostMapping("/categories")
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
@@ -87,7 +87,7 @@ public class AdminController {
     }
 
 
-    //// User ////
+    
 
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getAllUsers(){

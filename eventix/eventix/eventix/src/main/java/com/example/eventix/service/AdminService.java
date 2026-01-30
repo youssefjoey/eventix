@@ -21,7 +21,7 @@ public class AdminService {
     private final UserService userService;
     private final ReservationService reservationService;
 
-    // CATEGORY
+    
     public CategoryDTO createCategory(CategoryDTO dto) {
         return categoryService.createCategory(dto);
     }
@@ -30,12 +30,12 @@ public class AdminService {
         categoryService.deleteCategory(id);
     }
 
-    //// USER ////
+    
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    //// EVENT ////
+    
 
     public EventDTO createEvent(EventDTO eventDTO){
         return eventService.createEvent(eventDTO);
@@ -50,7 +50,7 @@ public class AdminService {
     }
 
 
-    //// RESERVATION ////
+    
     public void cancelReservation(Long id){
         reservationService.cancelReservation(id);
     }

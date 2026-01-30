@@ -20,26 +20,26 @@ public class FileUploadService {
             throw new IllegalArgumentException("File cannot be empty");
         }
 
-        // Validate file type
+        
         String contentType = file.getContentType();
         if (!isValidImageType(contentType)) {
             throw new IllegalArgumentException("Invalid file type. Only images are allowed");
         }
 
-        // Create upload directory if it doesn't exist
+        
         Path uploadPath = Paths.get(uploadDir);
         Files.createDirectories(uploadPath);
 
-        // Generate unique filename
+        
         String originalFilename = file.getOriginalFilename();
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String newFilename = UUID.randomUUID().toString() + fileExtension;
 
-        // Save file
+        
         Path filePath = uploadPath.resolve(newFilename);
         Files.write(filePath, file.getBytes());
 
-        // Return relative path for storage in database
+        
         return "uploads/events/" + newFilename;
     }
 

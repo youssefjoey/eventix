@@ -15,12 +15,12 @@ const ReservationsManagement = () => {
       setLoading(true);
       const response = await api.get('/admin/reservations');
       console.log('✅ Reservations fetched:', response.data);
-      // Handle response - ensure it's an array
+      
       const reservationsData = Array.isArray(response.data) ? response.data : [];
       setReservations(reservationsData);
     } catch (error) {
       console.error('❌ Error fetching reservations:', error);
-      setReservations([]); // Set empty array on error
+      setReservations([]); 
     } finally {
       setLoading(false);
     }

@@ -14,7 +14,7 @@ const Categories = () => {
   const [categoryEvents, setCategoryEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Modal State
+  
   const [activeEvent, setActiveEvent] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -138,7 +138,7 @@ const Categories = () => {
         </motion.div>
       )}
 
-      {/* EVENT MODAL - Consistent with Events page */}
+      {}
       <AnimatePresence>
         {activeEvent && (
           <div className="modal-overlay" onClick={() => setActiveEvent(null)}>

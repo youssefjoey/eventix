@@ -73,21 +73,21 @@ public class UserService {
         System.out.println("🔑 Validating password for: " + email);
         System.out.println("   Stored password type: " + (user.getPassword() != null && user.getPassword().startsWith("$2a$") ? "BCRYPT" : "PLAIN TEXT"));
 
-        // Handle both plain text passwords (legacy) and BCrypt hashed passwords (new)
+        
         boolean passwordMatches = false;
 
-        // Try BCrypt comparison first
+        
         if (user.getPassword() != null && user.getPassword().startsWith("$2a$")) {
-            // This is a hashed password
+            
             System.out.println("🔑 Checking BCrypt password...");
             passwordMatches = passwordEncoder.matches(password, user.getPassword());
         } else {
-            // Legacy plain text password - check directly and hash it for future use
+            
             System.out.println("🔑 Checking plain text password (legacy)...");
             if (user.getPassword() != null && user.getPassword().equals(password)) {
                 passwordMatches = true;
                 System.out.println("✅ Plain text password matched! Auto-hashing for future use...");
-                // Auto-upgrade: hash the plain text password
+                
                 user.setPassword(passwordEncoder.encode(password));
                 userRepository.save(user);
                 System.out.println("✅ Password upgraded to BCrypt");

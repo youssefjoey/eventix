@@ -43,13 +43,13 @@ public class AuthController {
             UserDTO user = userService.loginUser(email, password);
             System.out.println("✅ User authenticated: " + email + ", Role: " + user.getRole());
 
-            // Get the user from database to get the role
+            
             Optional<User> userOptional = userRepository.findByEmail(email);
             if (userOptional.isPresent()) {
                 User dbUser = userOptional.get();
                 System.out.println("📝 User found in DB: " + dbUser.getName() + ", Role: " + dbUser.getRole());
 
-                // Create Spring Security Authentication
+                
                 Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + dbUser.getRole().toString()));
 
@@ -59,12 +59,12 @@ public class AuthController {
                         authorities
                 );
 
-                // Set authentication in SecurityContext
+                
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 securityContext.setAuthentication(authentication);
                 SecurityContextHolder.setContext(securityContext);
 
-                // Save the SecurityContext in the session
+                
                 session.setAttribute(
                         HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                         securityContext

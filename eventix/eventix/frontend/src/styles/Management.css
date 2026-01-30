@@ -1,7 +1,4 @@
-/* ============================================
-   MANAGEMENT COMPONENTS - CLEAN LIGHT DESIGN
-   Events, Categories, Users, Reservations
-   ============================================ */
+
 
 .management-container {
   animation: slideInUp 0.5s ease-out;
@@ -21,9 +18,7 @@
   }
 }
 
-/* ============================================
-   MANAGEMENT HEADER
-   ============================================ */
+
 
 .management-header {
   display: flex;
@@ -51,13 +46,11 @@
   font-weight: 600;
 }
 
-/* ============================================
-   FORMS
-   ============================================ */
+
 
 .event-form {
   background: rgba(255, 255, 255, 0.65);
-  /* Frosted Aerogel */
+  
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.8);
@@ -113,9 +106,7 @@
   line-height: 1.6;
 }
 
-/* ============================================
-   BUTTONS (Overrides or Specifics)
-   ============================================ */
+
 
 .btn {
   padding: 12px 24px;
@@ -164,9 +155,7 @@
   background: #fee2e2;
 }
 
-/* ============================================
-   CARDS GRID
-   ============================================ */
+
 
 .events-grid,
 .reservations-grid {
@@ -180,7 +169,7 @@
 .category-card,
 .reservation-card {
   background: rgba(255, 255, 255, 0.65);
-  /* Frosted Aerogel */
+  
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.8);
@@ -282,13 +271,11 @@
   justify-content: center;
 }
 
-/* ============================================
-   TABLES
-   ============================================ */
+
 
 .users-table {
   background: rgba(255, 255, 255, 0.65);
-  /* Frosted Aerogel */
+  
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.8);
@@ -380,9 +367,7 @@
   color: #ef4444;
 }
 
-/* ============================================
-   LOADING STATE
-   ============================================ */
+
 
 .loading {
   opacity: 0.5;
@@ -410,9 +395,7 @@
   }
 }
 
-/* ============================================
-   RESPONSIVE DESIGN
-   ============================================ */
+
 
 @media (max-width: 1024px) {
 

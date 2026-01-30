@@ -16,7 +16,7 @@ const Events = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredEvents, setFilteredEvents] = useState([]);
 
-  // Modal State
+  
   const [activeEvent, setActiveEvent] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -180,7 +180,7 @@ const Events = () => {
         ))}
       </div>
 
-      {/* EVENT MODAL - Smaller form in the middle */}
+      {}
       <AnimatePresence>
         {activeEvent && (
           <div className="modal-overlay" onClick={() => setActiveEvent(null)}>

@@ -36,12 +36,12 @@ const EventsManagement = () => {
       console.log('✅ Events fetched:', response.data);
       console.log('📸 First event imageUrl:', response.data[0]?.imageUrl);
       console.log('📸 First event full data:', response.data[0]);
-      // Handle response - ensure it's an array
+      
       const eventsData = Array.isArray(response.data) ? response.data : [];
       setEvents(eventsData);
     } catch (error) {
       console.error('❌ Error fetching events:', error);
-      setEvents([]); // Set empty array on error
+      setEvents([]); 
     } finally {
       setLoading(false);
     }
@@ -51,12 +51,12 @@ const EventsManagement = () => {
     try {
       const response = await api.get('/categories');
       console.log('✅ Categories fetched:', response.data);
-      // Handle response - ensure it's an array
+      
       const categoriesData = Array.isArray(response.data) ? response.data : [];
       setCategories(categoriesData);
     } catch (error) {
       console.error('❌ Error fetching categories:', error);
-      setCategories([]); // Set empty array on error
+      setCategories([]); 
     }
   };
 
@@ -72,13 +72,13 @@ const EventsManagement = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file size (max 10MB)
+    
     if (file.size > 10 * 1024 * 1024) {
       alert('❌ File size must be less than 10MB');
       return;
     }
 
-    // Validate file type
+    
     if (!file.type.startsWith('image/')) {
       alert('❌ Please upload an image file');
       return;
@@ -120,7 +120,7 @@ const EventsManagement = () => {
     try {
       console.log('📤 Creating Event:', formData);
 
-      // Combine date and time fields into proper LocalDateTime format
+      
       const dateTime = `${formData.date} 00:00`;
       const startDateTime = formData.startTime ? `${formData.date} ${formData.startTime}` : dateTime;
       const endDateTime = formData.endTime ? `${formData.date} ${formData.endTime}` : `${formData.date} 23:59`;
@@ -156,7 +156,7 @@ const EventsManagement = () => {
     try {
       console.log('📤 Updating Event:', editingId, formData);
 
-      // Combine date and time fields into proper LocalDateTime format
+      
       const dateTime = `${formData.date} 00:00`;
       const startDateTime = formData.startTime ? `${formData.date} ${formData.startTime}` : dateTime;
       const endDateTime = formData.endTime ? `${formData.date} ${formData.endTime}` : `${formData.date} 23:59`;

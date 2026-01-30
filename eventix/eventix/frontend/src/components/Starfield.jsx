@@ -18,7 +18,7 @@ const Starfield = () => {
         const stars = [];
         const starCount = 200;
 
-        // Theme colors for stars
+        
         const colors = ['#ffffff', '#ff007a', '#00f2ff', '#bd00ff', '#ffffff'];
 
         for (let i = 0; i < starCount; i++) {
@@ -33,7 +33,7 @@ const Starfield = () => {
         }
 
         const draw = () => {
-            // Very slight fade for motion trail effect
+            
             ctx.fillStyle = 'rgba(2, 4, 8, 0.1)';
             ctx.fillRect(0, 0, width, height);
 
@@ -45,14 +45,14 @@ const Starfield = () => {
                 ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Move stars slower for "ethereal" feel
+                
                 star.y += star.speed;
                 if (star.y > height) {
                     star.y = 0;
                     star.x = Math.random() * width;
                 }
 
-                // Pulse opacity smoothly
+                
                 star.opacity += (Math.random() - 0.5) * 0.02;
                 if (star.opacity < 0.1) star.opacity = 0.1;
                 if (star.opacity > 0.8) star.opacity = 0.8;

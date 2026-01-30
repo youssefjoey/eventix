@@ -15,12 +15,12 @@ const UsersManagement = () => {
       setLoading(true);
       const response = await api.get('/admin/users');
       console.log('✅ Users fetched:', response.data);
-      // Handle response - ensure it's an array
+      
       const usersData = Array.isArray(response.data) ? response.data : [];
       setUsers(usersData);
     } catch (error) {
       console.error('❌ Error fetching users:', error);
-      setUsers([]); // Set empty array on error
+      setUsers([]); 
     } finally {
       setLoading(false);
     }

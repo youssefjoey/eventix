@@ -63,7 +63,7 @@ const EventDetail = () => {
         <ArrowLeft size={16} /> COLLECTION
       </button>
 
-      {/* Main Content Area - Optimized Center Layout */}
+      {}
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         <motion.div
           className="event-image"
@@ -117,7 +117,7 @@ const EventDetail = () => {
           </p>
         </div>
 
-        {/* Reservation Form - Optimized Small Card in Center */}
+        {}
         <motion.div
           className="card"
           initial={{ opacity: 0, y: 40 }}

@@ -44,7 +44,7 @@ public class ReservationService {
 
         int seats = Math.toIntExact(dto.getSeats_reserved());
 
-        // Create reservation with HELD status
+        
         Reservation reservation = Reservation.builder()
                 .user(user)
                 .event(event)
@@ -76,12 +76,12 @@ public class ReservationService {
 
         System.out.println("🚫 Canceling reservation #" + id);
 
-        // Update reservation status
+        
         reservation.setStatus(ReservationStatus.CANCELLED);
         reservationRepository.save(reservation);
         System.out.println("✅ Reservation marked as CANCELLED");
 
-        // Refund or cancel payment if exists
+        
         paymentRepository.findByReservation_Id(reservation.getId())
                 .ifPresent(payment -> {
                     payment.setStatus(Payment_Status.valueOf(Payment_Status.FAILED.name()));
@@ -89,12 +89,12 @@ public class ReservationService {
                     System.out.println("✅ Payment marked as FAILED");
                 });
 
-        // Return seats to event
+        
         Event event = reservation.getEvent();
         event.setAvailableSeats(event.getAvailableSeats() + reservation.getSeats());
         System.out.println("✅ Seats returned to event. Available: " + event.getAvailableSeats());
 
-        // Mark all tickets as CANCELED instead of deleting
+        
         ticketRepository.findAll().stream()
                 .filter(t -> t.getReservation().getId().equals(reservation.getId()))
                 .forEach(ticket -> {
