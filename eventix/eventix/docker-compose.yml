@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: eventix-db
+    environment:
+      MYSQL_DATABASE: eventix_db
+      MYSQL_ROOT_PASSWORD: 1234567
+      MYSQL_USER: joey
+      MYSQL_PASSWORD: 1234567
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - eventix-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ujoe", "-p1234567"]
+      timeout: 20s
+      retries: 10
+      interval: 5s
+
+  backend:
+    build:
+      context: ./eventix
+      dockerfile: Dockerfile
+    container_name: eventix-backend
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/eventix_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: joey
+      SPRING_DATASOURCE_PASSWORD: 1234567
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - eventix-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: eventix-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - eventix-network
+
+volumes:
+  mysql-data:
+
+networks:
+  eventix-network:
+    driver: bridge
