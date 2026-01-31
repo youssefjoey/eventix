@@ -3,6 +3,7 @@ package com.example.eventix.service;
 import com.example.eventix.dto.PaymentDTO;
 import com.example.eventix.exception.ResourceNotFoundException;
 import com.example.eventix.model.*;
+import com.example.eventix.repository.EventRepository;
 import com.example.eventix.repository.PaymentRepository;
 import com.example.eventix.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final ReservationRepository reservationRepository;
+    private final EventRepository eventRepository;
     private final TicketService ticketService;
 
     public PaymentDTO createPayment(PaymentDTO dto) {
@@ -43,10 +45,27 @@ public class PaymentService {
             payment.setPaidAt(LocalDateTime.now());
             payment = paymentRepository.save(payment);
             
+            // DECREASE SEATS ONLY ON SUCCESSFUL PAYMENT
+            Event event = reservation.getEvent();
+            if (event.getAvailableSeats() < reservation.getSeats()) {
+                throw new IllegalStateException("Not enough seats available for this transaction.");
+            }
+            event.setAvailableSeats(event.getAvailableSeats() - reservation.getSeats());
+            eventRepository.save(event);
+
             reservation.setStatus(ReservationStatus.PAID);
             reservationRepository.save(reservation);
         } else {
             System.out.println("✅ No existing payment found - creating new payment");
+
+            // DECREASE SEATS ONLY ON SUCCESSFUL PAYMENT 
+            Event event = reservation.getEvent();
+            if (event.getAvailableSeats() < reservation.getSeats()) {
+                throw new IllegalStateException("Not enough seats available for this transaction.");
+            }
+            event.setAvailableSeats(event.getAvailableSeats() - reservation.getSeats());
+            eventRepository.save(event);
+
             payment = Payment.builder()
                     .reservation(reservation)
                     .amount(dto.getAmount())

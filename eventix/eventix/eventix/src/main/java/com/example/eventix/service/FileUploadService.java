@@ -39,7 +39,7 @@ public class FileUploadService {
         Path filePath = uploadPath.resolve(newFilename);
         Files.write(filePath, file.getBytes());
 
-        
+
         return "uploads/events/" + newFilename;
     }
 

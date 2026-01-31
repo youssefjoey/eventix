@@ -36,36 +36,31 @@ public class ReservationService {
         if(dto.getSeats_reserved() <= 0) throw new IllegalArgumentException("Seats reserved must be at least 1");
         if(event.getAvailableSeats() < dto.getSeats_reserved()) throw new IllegalStateException("Not enough available seats");
 
-        event.setAvailableSeats(event.getAvailableSeats() - dto.getSeats_reserved());
+        // We do NOT decrease available seats here anymore.
+        // Seats will be decreased only when payment is successfully processed.
 
         
         Reservation reservation = Reservation.builder()
                 .user(user)
                 .event(event)
                 .seats(dto.getSeats_reserved())
-                .status(ReservationStatus.PAID) // Automatically mark as PAID for instant tickets
+                .status(ReservationStatus.HELD) // Initial status is HELD
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plus(30, java.time.temporal.ChronoUnit.MINUTES))
                 .build();
 
         Reservation saved = reservationRepository.save(reservation);
 
-        // Create a successful payment record automatically
-        Payment payment = Payment.builder()
-                .reservation(saved)
-                .amount(event.getPriceBase().multiply(BigDecimal.valueOf(dto.getSeats_reserved())))
-                .status(Payment_Status.SUCCESS)
-                .method(Payment_Method.CARD)
-                .paidAt(LocalDateTime.now())
-                .build();
-
-        paymentRepository.save(payment);
-
-        // TRIGGER TICKET GENERATION IMMEDIATELY
-        System.out.println("🚀 Triggering ticket generation for new reservation ID: " + saved.getId());
-        ticketService.generateTicketsForReservation(saved);
+        // removed automatic payment record creation and ticket generation here
+        // this will be handled in PaymentService after user confirms payment
 
         return mapToDTO(saved);
+    }
+
+    public ReservationDTO getReservationById(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation not found: " + id));
+        return mapToDTO(reservation);
     }
 
 
@@ -82,8 +77,13 @@ public class ReservationService {
                     paymentRepository.save(payment);
                 });
 
-        Event event = reservation.getEvent();
-        event.setAvailableSeats(event.getAvailableSeats() + reservation.getSeats());
+        // Only restore seats if the reservation was already PAID.
+        // Since we now only decrease seats on Payment, we only restore them if they were taken.
+        if (ReservationStatus.PAID.equals(reservation.getStatus())) {
+            Event event = reservation.getEvent();
+            event.setAvailableSeats(event.getAvailableSeats() + reservation.getSeats());
+            eventRepository.save(event);
+        }
 
         ticketService.getAllTicketsByReservationId(reservation.getId())
                 .forEach(ticketDTO -> {

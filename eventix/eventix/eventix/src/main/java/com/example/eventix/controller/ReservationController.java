@@ -32,9 +32,20 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.findReservationByUserId(userid));
     }
 
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<ReservationDTO> getReservationById(@PathVariable Long id){
+        return ResponseEntity.ok(reservationService.getReservationById(id));
+    }
+
     @GetMapping("/byEvent-status/{eventId}")
     public ResponseEntity<List<ReservationDTO>> getReservationByEventAndStatus(@PathVariable Long eventId ,@RequestParam ReservationStatus reservationStatus){
         return ResponseEntity.ok(reservationService.findByEventIdAndStatus(eventId,reservationStatus));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> cancelReservation(@PathVariable Long id){
+        reservationService.cancelReservation(id);
+        return ResponseEntity.noContent().build();
     }
 
 

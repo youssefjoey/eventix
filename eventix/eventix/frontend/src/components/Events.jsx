@@ -16,7 +16,6 @@ const Events = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredEvents, setFilteredEvents] = useState([]);
 
-  
   const [activeEvent, setActiveEvent] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -30,11 +29,6 @@ const Events = () => {
           eventService.getAllEvents(),
           categoryService.getAllCategories()
         ]);
-        console.log('📌 Events received from API:', eventsRes.data);
-        if (eventsRes.data && eventsRes.data.length > 0) {
-          console.log('📸 First event imageUrl:', eventsRes.data[0]?.imageUrl);
-          console.log('📸 First event data:', JSON.stringify(eventsRes.data[0], null, 2));
-        }
         setEvents(eventsRes.data || []);
         setCategories(categoriesRes.data || []);
         setFilteredEvents(eventsRes.data || []);
@@ -73,15 +67,16 @@ const Events = () => {
     try {
       setSubmitting(true);
       setReserveError(null);
-      await reservationService.createReservation({
+      const response = await reservationService.createReservation({
         user_id: user.id,
         event_id: activeEvent.id,
         seats_reserved: quantity
       });
+      const reservationId = response.data.id;
       setSuccess(true);
       setTimeout(() => {
         setActiveEvent(null);
-        navigate('/my-tickets');
+        navigate(`/payment/${reservationId}`);
       }, 2000);
     } catch (err) {
       setReserveError(err.response?.data?.message || "Reservation failed.");
@@ -118,8 +113,6 @@ const Events = () => {
         </div>
       </div>
 
-
-
       <div className="events-grid">
         {filteredEvents.map((event, index) => (
           <motion.div
@@ -131,11 +124,14 @@ const Events = () => {
             transition={{ duration: 0.6, delay: (index % 3) * 0.1 }}
           >
             <div className="event-image">
-              {console.log(`🔍 Event "${event.name}" imageUrl:`, event.imageUrl)}
               {event.imageUrl ? (
                 <img
                   src={event.imageUrl}
                   alt={event.name}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1540575861501-7ad05823c9f5?auto=format&fit=crop&q=80&w=800";
+                  }}
                 />
               ) : (
                 <div style={{
@@ -180,7 +176,6 @@ const Events = () => {
         ))}
       </div>
 
-      {}
       <AnimatePresence>
         {activeEvent && (
           <div className="modal-overlay" onClick={() => setActiveEvent(null)}>

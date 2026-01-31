@@ -35,13 +35,14 @@ const EventDetail = () => {
     try {
       setSubmitting(true);
       setError(null);
-      await reservationService.createReservation({
+      const response = await reservationService.createReservation({
         user_id: user.id,
         event_id: parseInt(eventId),
         seats_reserved: quantity
       });
+      const reservationId = response.data.id;
       setSuccess(true);
-      setTimeout(() => navigate('/my-tickets'), 2000);
+      setTimeout(() => navigate(`/payment/${reservationId}`), 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Reservation failed.");
     } finally {
@@ -63,7 +64,7 @@ const EventDetail = () => {
         <ArrowLeft size={16} /> COLLECTION
       </button>
 
-      {}
+      { }
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         <motion.div
           className="event-image"
@@ -76,6 +77,10 @@ const EventDetail = () => {
               src={event.imageUrl}
               alt={event.name}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1540575861501-7ad05823c9f5?auto=format&fit=crop&q=80&w=800";
+              }}
             />
           ) : (
             <div style={{
@@ -117,7 +122,7 @@ const EventDetail = () => {
           </p>
         </div>
 
-        {}
+        { }
         <motion.div
           className="card"
           initial={{ opacity: 0, y: 40 }}

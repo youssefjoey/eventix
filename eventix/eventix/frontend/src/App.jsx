@@ -12,6 +12,8 @@ import EventDetail from './components/EventDetail';
 import MyTickets from './components/MyTickets';
 import Categories from './components/Categories';
 import AdminDashboard from './components/AdminDashboard';
+import Analytics from './components/Analytics';
+import Payment from './components/Payment';
 import Starfield from './components/Starfield';
 import './styles/Global.css';
 
@@ -94,7 +96,9 @@ function AppContent() {
           <Route path="/events" element={<PageWrapper><Events /></PageWrapper>} />
           <Route path="/categories" element={<PageWrapper><Categories /></PageWrapper>} />
           <Route path="/event/:eventId" element={<PageWrapper><ProtectedRoute><EventDetail /></ProtectedRoute></PageWrapper>} />
+          <Route path="/payment/:reservationId" element={<PageWrapper><ProtectedRoute><Payment /></ProtectedRoute></PageWrapper>} />
           <Route path="/my-tickets" element={<PageWrapper><ProtectedRoute><MyTickets /></ProtectedRoute></PageWrapper>} />
+          <Route path="/analytics" element={<PageWrapper><AdminRoute><Analytics /></AdminRoute></PageWrapper>} />
           <Route path="/admin" element={<PageWrapper><AdminRoute><AdminDashboard /></AdminRoute></PageWrapper>} />
         </Routes>
       </AnimatePresence>

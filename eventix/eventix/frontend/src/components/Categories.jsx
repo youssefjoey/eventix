@@ -14,7 +14,6 @@ const Categories = () => {
   const [categoryEvents, setCategoryEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  
   const [activeEvent, setActiveEvent] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -57,15 +56,16 @@ const Categories = () => {
     try {
       setSubmitting(true);
       setReserveError(null);
-      await reservationService.createReservation({
+      const response = await reservationService.createReservation({
         user_id: user.id,
         event_id: activeEvent.id,
         seats_reserved: quantity
       });
+      const reservationId = response.data.id;
       setSuccess(true);
       setTimeout(() => {
         setActiveEvent(null);
-        navigate('/my-tickets');
+        navigate(`/payment/${reservationId}`);
       }, 2000);
     } catch (err) {
       setReserveError(err.response?.data?.message || "Reservation failed.");
@@ -117,7 +117,14 @@ const Categories = () => {
               {categoryEvents.map(event => (
                 <div key={event.id} className="event-card">
                   <div className="event-image">
-                    <img src="/assets/empire-event.jpg" alt={event.name} />
+                    <img
+                      src={event.imageUrl || "https://images.unsplash.com/photo-1540575861501-7ad05823c9f5?auto=format&fit=crop&q=80&w=800"}
+                      alt={event.name}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://images.unsplash.com/photo-1540575861501-7ad05823c9f5?auto=format&fit=crop&q=80&w=800";
+                      }}
+                    />
                   </div>
                   <div className="event-body">
                     <div className="event-category">
@@ -127,7 +134,7 @@ const Categories = () => {
                     <div className="event-price">${event.priceBase}</div>
                     <div className="event-footer">
                       <button className="btn-primary" onClick={() => openEventModal(event)}>
-                        VIEW PROFILE <ArrowRight size={16} />
+                        RESERVE ACCESS <ArrowRight size={16} />
                       </button>
                     </div>
                   </div>
@@ -138,7 +145,6 @@ const Categories = () => {
         </motion.div>
       )}
 
-      {}
       <AnimatePresence>
         {activeEvent && (
           <div className="modal-overlay" onClick={() => setActiveEvent(null)}>

@@ -40,10 +40,17 @@ const Navbar = () => {
             <>
               <Link to="/events" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>EXPLORE</Link>
               <Link to="/categories" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>GENRES</Link>
-              {user && <Link to="/my-tickets" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary)' }}>TICKETS</Link>}
+              {user && (
+                <Link to="/my-tickets" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--primary)' }}>TICKETS</Link>
+              )}
             </>
           )}
-          {user?.role === 'ADMIN' && <Link to="/admin" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 900, color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '100px' }}>ADMIN HUB</Link>}
+          {user?.role === 'ADMIN' && (
+            <>
+              <Link to="/analytics" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>ANALYTICS</Link>
+              <Link to="/admin" className="navbar-link" style={{ fontSize: '0.7rem', fontWeight: 900, color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '100px' }}>ADMIN HUB</Link>
+            </>
+          )}
         </div>
 
         <div className="navbar-auth" style={{ gap: '0.5rem' }}>

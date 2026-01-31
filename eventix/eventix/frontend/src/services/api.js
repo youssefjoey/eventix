@@ -4,12 +4,12 @@ const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-   withCredentials: true, 
+  withCredentials: true,
 
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, 
+  timeout: 10000,
 });
 
 
@@ -52,6 +52,8 @@ export const categoryService = {
 export const reservationService = {
   createReservation: (data) => api.post('/reservations', data),
   getReservationsByUser: (userId) => api.get(`/reservations/${userId}`),
+  getReservationById: (id) => api.get(`/reservations/detail/${id}`),
+  cancelReservation: (id) => api.delete(`/reservations/${id}`),
 };
 
 
@@ -77,19 +79,18 @@ export const userService = {
 
 
 export const adminService = {
-  
+
   createEvent: (data) => api.post('/admin/events', data),
   updateEvent: (id, data) => api.put(`/admin/events/${id}`, data),
   deleteEvent: (id) => api.delete(`/admin/events/${id}`),
 
-  
+
   createCategory: (data) => api.post('/admin/categories', data),
   deleteCategory: (id) => api.delete(`/admin/categories/${id}`),
 
-  
+
   getAllReservations: () => api.get('/admin/reservations'),
   cancelReservation: (id) => api.delete(`/admin/reservations/${id}`),
 };
 
 export default api;
-
