@@ -109,6 +109,14 @@ public class TicketService {
         ticketRepository.delete(ticket);
     }
 
+    public void cancelTicketsByReservationId(Long reservationId) {
+        List<Ticket> tickets = ticketRepository.findByReservation_Id(reservationId);
+        for (Ticket ticket : tickets) {
+            ticket.setStatus(TicketStatus.CANCELED);
+            ticketRepository.save(ticket);
+        }
+    }
+
     private TicketDTO mapToDTO(Ticket ticket) {
         return TicketDTO.builder()
                 .id(ticket.getId())

@@ -46,12 +46,15 @@ const MyTickets = () => {
             const ticketRes = await ticketService.getAllTicketsByReservation(reservation.id);
             const ticketsArray = Array.isArray(ticketRes.data) ? ticketRes.data : [ticketRes.data];
             ticketsArray.forEach(ticket => {
-              ticketsData.push({
-                ...ticket,
-                reservation_id: reservation.id,
-                event_id: reservation.event_id,
-                seats_reserved: reservation.seats_reserved
-              });
+              // Only include tickets that are not cancelled
+              if (ticket.status !== 'CANCELED') {
+                ticketsData.push({
+                  ...ticket,
+                  reservation_id: reservation.id,
+                  event_id: reservation.event_id,
+                  seats_reserved: reservation.seats_reserved
+                });
+              }
             });
           } catch (error) {
             console.error(`Error fetching tickets for reservation ${reservation.id}:`, error.message);

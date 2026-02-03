@@ -85,10 +85,8 @@ public class ReservationService {
             eventRepository.save(event);
         }
 
-        ticketService.getAllTicketsByReservationId(reservation.getId())
-                .forEach(ticketDTO -> {
-                   // Logic to cancel tickets could go here via ticketService
-                });
+        // Cancel all tickets for this reservation
+        ticketService.cancelTicketsByReservationId(reservation.getId());
     }
 
 

@@ -87,12 +87,6 @@ const Categories = () => {
       </header>
 
       <div className="category-filter">
-        <button
-          className={`category-btn ${selectedCategory === null ? 'active' : ''}`}
-          onClick={() => { setSelectedCategory(null); setCategoryEvents([]); }}
-        >
-          ALL DIMENSIONS
-        </button>
         {categories.map(category => (
           <button
             key={category.id}
@@ -118,11 +112,11 @@ const Categories = () => {
                 <div key={event.id} className="event-card">
                   <div className="event-image">
                     <img
-                      src={event.imageUrl || "https://images.unsplash.com/photo-1540575861501-7ad05823c9f5?auto=format&fit=crop&q=80&w=800"}
+                      src={event.imageUrl || ""}
                       alt={event.name}
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "https://images.unsplash.com/photo-1540575861501-7ad05823c9f5?auto=format&fit=crop&q=80&w=800";
+                        e.target.src = "";
                       }}
                     />
                   </div>
